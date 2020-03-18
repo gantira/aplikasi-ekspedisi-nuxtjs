@@ -1,4 +1,3 @@
-
 export default {
   mode: 'universal',
   /*
@@ -13,6 +12,14 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ],
+    
+    //TAMBAHKAN CODE INI UNTUK MENAMBAHKAN EKSTERNAL JAVASCRIPT
+    script: [
+      { src: "/vendor/jquery/jquery.min.js" },
+      { src: "/vendor/bootstrap/js/bootstrap.bundle.min.js" },
+      { src: "/vendor/jquery-easing/jquery.easing.min.js" },
+      { src: "/js/sb-admin-2.min.js" }
     ]
   },
   /*
@@ -22,7 +29,11 @@ export default {
   /*
   ** Global CSS
   */
+  
+  //DAN LOAD FILE CSS DI DALAM ATTRIBUTE INI
   css: [
+    '@/assets/vendor/fontawesome-free/css/all.min.css',
+    '@/assets/css/sb-admin-2.min.css'
   ],
   /*
   ** Plugins to load before mounting the App
@@ -38,15 +49,7 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
-    // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios',
   ],
-  /*
-  ** Axios module configuration
-  ** See https://axios.nuxtjs.org/options
-  */
-  axios: {
-  },
   /*
   ** Build configuration
   */

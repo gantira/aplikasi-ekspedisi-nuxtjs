@@ -125,7 +125,13 @@
             Activity Log
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+          <a
+            class="dropdown-item"
+            @click="logout"
+            href="#"
+            data-toggle="modal"
+            data-target="#logoutModal"
+          >
             <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
             Logout
           </a>
@@ -136,5 +142,16 @@
 </template>
 
 <script>
-export default {};
+import { mapMutations } from "vuex";
+export default {
+  methods: {
+    ...mapMutations(["SET_IS_AUTH"]), //LOAD MUTATION DARI INDEX.JS
+    //KITA GUNAKAN ASYNC AGAR BISA MENUNGGU SEBUAH PROSES SELESAI, KEMUDIAN CODE SELANJUTNYA DIJALANKAN
+    async logout() {
+      await this.$auth.logout(); //JADI KITA TUNGGU DULU PROSES LOGOUT SELESAI
+      this.SET_IS_AUTH(false); //KEMUDIAN SET ISAUTH JADI FALSE
+      this.$router.push("/login"); //DAN REDIRECT KE HALAMAN LOGIN
+    }
+  }
+};
 </script>

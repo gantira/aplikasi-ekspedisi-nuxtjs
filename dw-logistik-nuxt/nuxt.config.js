@@ -13,7 +13,7 @@ export default {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ],
-    
+
     //TAMBAHKAN CODE INI UNTUK MENAMBAHKAN EKSTERNAL JAVASCRIPT
     script: [
       { src: "/vendor/jquery/jquery.min.js" },
@@ -29,7 +29,7 @@ export default {
   /*
   ** Global CSS
   */
-  
+
   //DAN LOAD FILE CSS DI DALAM ATTRIBUTE INI
   css: [
     '@/assets/vendor/fontawesome-free/css/all.min.css',
@@ -49,7 +49,36 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/auth'
   ],
+  auth: {
+    strategies: {
+      //METHOD LOGIN YANG AKAN KITA GUNAKAN
+      local: {
+        //DIMANA ENDPOINTNYA ADALAH
+        endpoints: {
+          //UNTUK LOGIN PADA BAGIAN URL, KITA MASUKKAN URL LOGIN DARI API YANG SUDAH KITA BUAT
+          //SEDANGKAN PROPERTYNAME ADALAH PROPERTY YANG INGIN KITA AMBIL VALUENYA
+          //DALAM HAL INI, LOGIN MENGHARAPKAN TOKEN, SEDANGKAN PADA API KITA ME-RETURN TOKEN DI DALAM OBJECT DATA
+          login: { url: '/login', method: 'post', propertyName: 'data' },
+          logout: { url: '/logout', method: 'post' },
+          user: { url: '/users/login', method: 'get', propertyName: 'data' }
+        },
+        tokenRequired: true,
+        tokenType: 'Bearer '
+      }
+    }
+  },
+  //SET BASE URL PROJECT API KITA, SEHINGGA SEMUA REQUEST AKAN MENGARAH KESANA
+  axios: {
+    baseURL: 'http://dw-logistik-api.test/'
+  },
+  //MIDDLEWARE UNTUK MENGECEK SUDAH LOGIN ATAU BELUM, KITA SET GLOBAL
+  router: {
+    middleware: ['auth']
+  },
+
   /*
   ** Build configuration
   */
@@ -57,7 +86,7 @@ export default {
     /*
     ** You can extend webpack config here
     */
-    extend (config, ctx) {
+    extend(config, ctx) {
     }
   }
 }

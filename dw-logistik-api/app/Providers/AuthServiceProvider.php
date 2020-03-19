@@ -41,7 +41,7 @@ class AuthServiceProvider extends ServiceProvider
                 //SEDANGKAN YANG DIINGINKAN HANYA TOKENNYA SAJA
                 $explode = explode(' ', $request->header('Authorization'));
                 //KEMUDIAN FIND USER BERDASARKAN TOKEN YANG DITERIMA
-                return User::where('api_token', $explode[1])->first();
+                return User::where('api_token', end($explode))->first();
             }
         });
     }

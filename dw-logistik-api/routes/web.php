@@ -16,13 +16,16 @@ $router->get('/', function () use ($router) {
 });
 
 $router->post('/login', 'UserController@login');
+$router->post('/logout', 'UserController@logout'); //KITA TAMBAHKAN ROUTE LOGOUT SEKALIAN
 $router->post('/reset', 'UserController@sendResetToken');
 $router->put('/reset/{token}', 'UserController@verifyResetPassword');
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/users', 'UserController@index');
     $router->post('/users', 'UserController@store');
+    $router->get('/users/login', 'UserController@getUserLogin');
     $router->get('/users/{id}', 'UserController@edit');
     $router->put('/users/{id}', 'UserController@update');
     $router->delete('/users/{id}', 'UserController@destroy');
 });
+

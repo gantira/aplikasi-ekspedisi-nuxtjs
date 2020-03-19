@@ -11,13 +11,11 @@ use App\Mail\ResetPasswordMail;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        //QUERY UNTUK MENGAMBIL DATA DARI TABLE USERS DAN DI-LOAD 10 DATA PER HALAMAN
-        $users = User::orderBy('created_at', 'desc')->paginate(10);
-        //KEMBALIKAN RESPONSE BERUPA JSON DENGAN FORMAT
-        //STATUS = SUCCESS
-        //DATA = DATA USERS DARI HASIL QUERY
+        $users = User::orderBy('created_at', 'desc')->when($request->q, function ($users) use ($request) {
+            $users = $users->where('name', 'LIKE', '%' . $request->q . '%');
+        })->paginate(10);
         return response()->json(['status' => 'success', 'data' => $users]);
     }
 
@@ -72,7 +70,7 @@ class UserController extends Controller
             'address' => 'required|string',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png', //MIMES BERARTI KITA HANYA MENGIZINKAN EXTENSION FILE YANG DISEBUTKAN
             'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'required|min:6',
+            'password' => 'nullable|string|min:6',
             'phone_number' => 'required|string',
             'role' => 'required',
             'status' => 'required',
@@ -105,7 +103,6 @@ class UserController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-
     public function edit($id)
     {
         //MENGAMBIL DATA BERDASARKAN ID
@@ -117,7 +114,9 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::find($id);
-        unlink(base_path('public/images/' . $user->photo));
+        if ($user->photo) {
+            unlink(base_path('public/images/' . $user->photo));
+        }
         $user->delete();
         return response()->json(['status' => 'success']);
     }
@@ -180,5 +179,17 @@ class UserController extends Controller
             return response()->json(['status' => 'success']);
         }
         return response()->json(['status' => 'error']);
+    }
+
+    public function getUserLogin(Request $request)
+    {
+        return response()->json(['status' => 'success', 'data' => $request->user()]);
+    }
+
+    public function logout(Request $request)
+    {
+        $user = $request->user(); //GET USER YANG SEDANG LOGIN
+        $user->update(['api_token' => null]); //UPDATE VALUENYA JADI NULL
+        return response()->json(['status' => 'success']);
     }
 }

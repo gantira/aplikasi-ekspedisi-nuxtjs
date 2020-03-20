@@ -39,6 +39,7 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '@/plugins/axios.js'
   ],
   /*
   ** Nuxt.js dev-modules
@@ -50,7 +51,8 @@ export default {
   */
   modules: [
     '@nuxtjs/axios',
-    '@nuxtjs/auth'
+    '@nuxtjs/auth',
+    'bootstrap-vue/nuxt'
   ],
   auth: {
     strategies: {
@@ -72,7 +74,7 @@ export default {
   },
   //SET BASE URL PROJECT API KITA, SEHINGGA SEMUA REQUEST AKAN MENGARAH KESANA
   axios: {
-    baseURL: 'http://dw-logistik-api.test/'
+    baseURL: 'http://localhost:8000/'
   },
   //MIDDLEWARE UNTUK MENGECEK SUDAH LOGIN ATAU BELUM, KITA SET GLOBAL
   router: {

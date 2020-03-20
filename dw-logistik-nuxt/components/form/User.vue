@@ -60,6 +60,7 @@
         v-model="users.password"
       />
       <p class="text-danger" v-if="errors.password">{{ errors.password[0] }}</p>
+      <p v-if="$route.name == 'users-edit-id'">Leave blank if you don't change your password</p>
     </div>
     <div class="form-group">
       <label for>Phone Number</label>
@@ -91,6 +92,7 @@
       <p class="text-danger" v-if="errors.status">{{ errors.status[0] }}</p>
     </div>
     <button class="btn btn-primary btn-sm" @click="submit">Save</button>
+    <nuxt-link :to="{name: 'users'}" class="btn btn-secondary btn-sm">Back</nuxt-link>
   </div>
 </template>
 <script>
@@ -112,22 +114,44 @@ export default {
       }
     };
   },
+  created() {
+    //FUNGSI INI HANYA AKAN KERJAKAN, APABILA HALAMAN YANG DILOAD ADALAH EDIT USER
+    if (this.$route.name == "users-edit-id") {
+      this.users = {
+        name: this.user.name,
+        identity_id: this.user.identity_id,
+        gender: this.user.gender,
+        address: this.user.address,
+        email: this.user.email,
+        password: "",
+        phone_number: this.user.phone_number,
+        role: this.user.role,
+        status: this.user.status
+      };
+    }
+  },
+
   computed: {
-    //PANGGIL STATE ERRORS DARI MODULE USERS
-    //DIMANA STATE INI AKAN BERISI INFORMASI ERROR VALIDASI
     ...mapState("user", {
+      user: state => state.data,
       errors: state => state.errors
     })
   },
   methods: {
-    ...mapActions("user", ["storeUsersData"]), //LOAD FUNGSI DARI MODULE USER
-    //KETIKA TOMBOL SAVE DITEKAN, MAKA FUNGSI INI AKAN DIJALANKAN
+    ...mapActions("user", ["storeUsersData", "updateUserData"]),
     submit() {
-      //DIMANA KITA MEMANGGIL FUNGSI UNTUK MENYIMPAN DATA YANG AKAN DIDEFINISIKAN DI ACTIONS DARI MODULE USER
-      //DAN KETIKA BERHASIL, MAKA AKAN DIREDIRECT KE HALAMAN LIST USER
-      this.storeUsersData(this.users).then(() =>
-        this.$router.push({ name: "users" })
-      );
+      //JIKA PAGE YANG DILOAD ADALAH EDIT USER
+      if (this.$route.name == "users-edit-id") {
+        //MAKA ASSIGN ID KE DALAM DATA USER
+        let data = Object.assign({ id: this.$route.params.id }, this.users);
+        //KEMUDIAN KIRIM REQUEST KE SERVER
+        this.updateUserData(data).then(this.$router.push({ name: "users" }));
+      } else {
+        //SELAIN ITU MAKA FUNGSI ADD DATA YANG AKAN DIJALAKAN
+        this.storeUsersData(this.users).then(() =>
+          this.$router.push({ name: "users" })
+        );
+      }
     }
   }
 };

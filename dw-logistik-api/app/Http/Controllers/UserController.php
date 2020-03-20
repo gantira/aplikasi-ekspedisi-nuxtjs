@@ -15,7 +15,7 @@ class UserController extends Controller
     {
         $users = User::orderBy('created_at', 'desc')->when($request->q, function ($users) use ($request) {
             $users = $users->where('name', 'LIKE', '%' . $request->q . '%');
-        })->paginate(10);
+        })->paginate(2);
         return response()->json(['status' => 'success', 'data' => $users]);
     }
 
